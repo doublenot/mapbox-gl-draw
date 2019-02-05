@@ -1,1 +1,14 @@
 .vscode/
+CHANGELOG.md
+bench
+ISSUE_TEMPLATE.md
+build
+docs
+server.js
+circle.yml
+index.js
+src
+README.md
+debug
+node_modules
+test
