@@ -1,18 +1,17 @@
-const events = require('./events');
-const Store = require('./store');
-const ui = require('./ui');
-const Constants = require('./constants');
-const xtend = require('xtend');
+const events = require("./events");
+const Store = require("./store");
+const ui = require("./ui");
+const Constants = require("./constants");
+const xtend = require("xtend");
 
 module.exports = function(ctx) {
-
   let controlContainer = null;
   let mapLoadedInterval = null;
 
   const setup = {
     onRemove: function() {
       // Stop connect attempt in the event that control is removed before map is loaded
-      ctx.map.off('load', setup.connect);
+      ctx.map.off("load", setup.connect);
       clearInterval(mapLoadedInterval);
 
       setup.removeLayers();
@@ -24,20 +23,21 @@ module.exports = function(ctx) {
       ctx.container = null;
       ctx.store = null;
 
-      if (controlContainer && controlContainer.parentNode) controlContainer.parentNode.removeChild(controlContainer);
+      if (controlContainer && controlContainer.parentNode)
+        controlContainer.parentNode.removeChild(controlContainer);
       controlContainer = null;
 
       return this;
     },
     connect: function() {
-      ctx.map.off('load', setup.connect);
+      ctx.map.off("load", setup.connect);
       clearInterval(mapLoadedInterval);
       setup.addLayers();
       ctx.store.storeMapConfig();
       ctx.events.addEventListeners();
     },
     onAdd: function(map) {
-      if (process.env.NODE_ENV !== 'test') {
+      if (process.env.NODE_ENV !== "test") {
         // Monkey patch to resolve breaking change to `fire` introduced by
         // mapbox-gl-js. See mapbox/mapbox-gl-draw/issues/766.
         const _fire = map.fire;
@@ -58,7 +58,6 @@ module.exports = function(ctx) {
       ctx.container = map.getContainer();
       ctx.store = new Store(ctx);
 
-
       controlContainer = ctx.ui.addButtons();
 
       if (ctx.options.boxSelect) {
@@ -72,8 +71,10 @@ module.exports = function(ctx) {
       if (map.loaded()) {
         setup.connect();
       } else {
-        map.on('load', setup.connect);
-        mapLoadedInterval = setInterval(() => { if (map.loaded()) setup.connect(); }, 16);
+        map.on("load", setup.connect);
+        mapLoadedInterval = setInterval(() => {
+          if (map.loaded()) setup.connect();
+        }, 16);
       }
 
       ctx.events.start();
@@ -86,7 +87,7 @@ module.exports = function(ctx) {
           type: Constants.geojsonTypes.FEATURE_COLLECTION,
           features: []
         },
-        type: 'geojson'
+        type: "geojson"
       });
 
       // hot features style
@@ -95,7 +96,7 @@ module.exports = function(ctx) {
           type: Constants.geojsonTypes.FEATURE_COLLECTION,
           features: []
         },
-        type: 'geojson'
+        type: "geojson"
       });
 
       ctx.options.styles.forEach(style => {
